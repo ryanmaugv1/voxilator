@@ -50,3 +50,17 @@ class FacePurgerPanel:
         return context.scene is not None
 
 
+class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
+    """Panel for select face filter related UI."""
+
+    bl_idname = 'VIEW3D_PT_UNSELECTEDACEFILTER'
+    bl_label  = 'Unselected Face Filter'
+
+    def draw(self, context):
+        layout, scene = self.layout, context.scene
+
+        col = layout.column()
+        col.operator(UnselectedFaceFilterOperator.bl_idname, 
+                     text='Delete Unselected Faces', icon='FILTER')
+
+
