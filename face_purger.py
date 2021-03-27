@@ -64,3 +64,33 @@ class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
                      text='Delete Unselected Faces', icon='FILTER')
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+#   Class Management
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+# List of classes to register (order matters)
+CLASSES = [
+    UnselectedFaceFilterOperator,
+    UnselectedFaceFilterPanel
+]
+
+
+def register():
+    from bpy.utils import register_class
+    for cls in CLASSES:
+        register_class(cls)
+    print('Class Register Procedure Completed.')
+
+
+def unregister():
+    from bpy.utils import unregister_class
+    for cls in reversed(CLASSES):
+        unregister_class(cls)
+    print('Class Unregisteration Procedure Completed,')
+
+
+if __name__ == '__main__':
+    register()
