@@ -23,12 +23,13 @@ import bmesh
 class UnselectedFaceFilterOperator(bpy.types.Operator):
     """Operator for filtering/removing unselected faces from mesh."""
 
-    bl_idname = 'fpurger.unselected_face_purger'
+    bl_idname = 'fpurger.unselected_face_filter'
     bl_label  = 'Filters/Removes Unselected Faces'
 
     def execute(self, context):
-        scene = context.scene
         print('Executing Unselected Face Filter Operation.')
+        scene = context.scene
+        removed_face_cnt = 0
 
         # Loop through all selected active objects in edit mode.
         selected_objs = context.selected_objects
@@ -40,8 +41,10 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
 
             # Delete all faces but those selected.
             bmesh.ops.delete(obj_bmesh, geom=unselected_faces, context='FACES')
-            print('Number of unselected faces: %s' % len(unselected_faces))
+            removed_face_cnt += len(unselected_faces)
             bmesh.update_edit_mesh(obj_data)
+        print('Removed a total of %s faces from a collection of %s objects.'
+              % (removed_face_cnt, len(selected_objs)))
 
         # Set selected objects as active.
         for obj in selected_objs:
@@ -54,6 +57,7 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
         # Recalculate and set origin to center of mass for joined object.
         bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
 
+        print('Completed Unselected Face Filter Operation.')
         return {'FINISHED'}
 
 
