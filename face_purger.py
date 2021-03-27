@@ -10,6 +10,7 @@
 """
 
 import bpy
+import bmesh
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -27,6 +28,24 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
 
     def execute(self, context):
         scene = context.scene
+        print('Ran operator.')
+
+        # Loop through all selected active objects in edit mode.
+        selected_objs = context.selected_objects
+        for obj in selected_objs:
+            # Get mesh as bmesh and get unselected_faces.
+            obj_data = obj.data
+            obj_bmesh = bmesh.from_edit_mesh(obj_data)
+            unselected_faces = [face for face in obj_bmesh.faces if not face.select]
+
+            # Delete all faces but those selected.
+            bmesh.ops.delete(obj_bmesh, geom=unselected_faces, context='FACES')
+            print('Number of unselected faces: %s' % len(unselected_faces))
+            bmesh.update_edit_mesh(obj_data)
+
+        # TODO(ryanmaugv1): Join the selected_objs to form one mesh after face filter.
+        # TODO(ryanmaugv1): Recalculate and set origin to center of mass
+
         return {'FINISHED'}
 
 
