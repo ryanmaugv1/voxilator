@@ -30,3 +30,23 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+#   Panels
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+class FacePurgerPanel:
+    """Define root panel configuration for plugin."""
+
+    bl_space_type  = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category    = 'FPurger'
+
+    @classmethod
+    def poll(cls, context):
+        """Returns true if there is a valid scene context else false."""
+        return context.scene is not None
+
+
