@@ -28,7 +28,7 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
 
     def execute(self, context):
         scene = context.scene
-        print('Ran operator.')
+        print('Executing Unselected Face Filter Operation.')
 
         # Loop through all selected active objects in edit mode.
         selected_objs = context.selected_objects
@@ -43,7 +43,12 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
             print('Number of unselected faces: %s' % len(unselected_faces))
             bmesh.update_edit_mesh(obj_data)
 
-        # TODO(ryanmaugv1): Join the selected_objs to form one mesh after face filter.
+        # Join the selected_objs to form one mesh after face filter.
+        for obj in selected_objs:
+            bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.join()
+
         # TODO(ryanmaugv1): Recalculate and set origin to center of mass
 
         return {'FINISHED'}
