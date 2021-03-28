@@ -51,14 +51,14 @@ class AddonProperties(bpy.types.PropertyGroup):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-class UnselectedFaceFilterOperator(bpy.types.Operator):
-    """Operator for filtering/removing unselected faces from mesh."""
+class FaceFilterOperator(bpy.types.Operator):
+    """Operator for filtering/removing faces from mesh using a specific startegy."""
 
-    bl_idname = 'fpurger.unselected_face_filter'
-    bl_label  = 'Filters/Removes Unselected Faces'
+    bl_idname = 'fpurger.face_filter'
+    bl_label  = 'Filters/Removes Mesh Faces'
 
     def execute(self, context):
-        print('Executing Unselected Face Filter Operation.')
+        print('Executing Face Filter Operation.')
         scene = context.scene
         removed_face_cnt = 0
 
@@ -88,7 +88,7 @@ class UnselectedFaceFilterOperator(bpy.types.Operator):
         # Recalculate and set origin to center of mass for joined object.
         bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
 
-        print('Completed Unselected Face Filter Operation.')
+        print('Completed Face Filter Operation.')
         return {'FINISHED'}
 
 
@@ -112,11 +112,11 @@ class FacePurgerPanel:
         return context.scene is not None
 
 
-class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
-    """Panel for select face filter related UI."""
+class FaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
+    """Panel for face filter related UI."""
 
-    bl_idname = 'VIEW3D_PT_UNSELECTEDACEFILTER'
-    bl_label  = 'Unselected Face Filter'
+    bl_idname = 'VIEW3D_PT_FACEFILTER'
+    bl_label  = 'Face Filter'
 
     def draw(self, context):
         layout, scene = self.layout, context.scene
@@ -124,8 +124,7 @@ class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
         col = layout.column()
         col.label(text='Filter Strategy')
         col.prop(context.scene.addon_props, 'filter_strats', text='')
-        col.operator(UnselectedFaceFilterOperator.bl_idname, 
-                     text='Delete Unselected Faces', icon='FILTER')
+        col.operator(FaceFilterOperator.bl_idname, text='Filter', icon='FILTER')
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -137,9 +136,9 @@ class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
 
 # List of classes to register (order matters)
 CLASSES = [
-    UnselectedFaceFilterOperator,
+    FaceFilterOperator,
     AddonProperties,
-    UnselectedFaceFilterPanel
+    FaceFilterPanel
 ]
 
 
