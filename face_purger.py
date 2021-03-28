@@ -60,20 +60,30 @@ class FaceFilterOperator(bpy.types.Operator):
     def execute(self, context):
         print('Executing Face Filter Operation.')
         scene = context.scene
+        filter_strategy = context.scene.addon_props.filter_strats
         removed_face_cnt = 0
+        
+        print('Selected Filter Strategy: %s' % filter_strategy)
 
         # Loop through all selected active objects in edit mode.
         selected_objs = context.selected_objects
         for obj in selected_objs:
-            # Get mesh as bmesh and get unselected_faces.
+            # Get mesh as bmesh.
             obj_data = obj.data
             obj_bmesh = bmesh.from_edit_mesh(obj_data)
-            unselected_faces = [face for face in obj_bmesh.faces if not face.select]
 
-            # Delete all faces but those selected.
-            bmesh.ops.delete(obj_bmesh, geom=unselected_faces, context='FACES')
-            removed_face_cnt += len(unselected_faces)
+            # Get faces to filter based on filter strategy
+            faces_to_filter = []
+            if filter_strategy == 'filter_strategy.unselected_faces':
+                faces_to_filter = [face for face in obj_bmesh.faces if not face.select]
+            if filter_strategy == 'filter_strategy.selected_faces':
+                faces_to_filter = [face for face in obj_bmesh.faces if face.select]
+
+            # Delete all faces within faces filter.
+            bmesh.ops.delete(obj_bmesh, geom=faces_to_filter, context='FACES')
+            removed_face_cnt += len(faces_to_filter)
             bmesh.update_edit_mesh(obj_data)
+
         print('Removed a total of %s faces from a collection of %s objects.'
               % (removed_face_cnt, len(selected_objs)))
 
