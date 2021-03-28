@@ -1,9 +1,12 @@
 """
 
-    Face Purger
+    Voxilator
 
-    Blender plugin for optimising meshes by removing/purging hidden faces
-    using various strategies and allowing control.
+    Blender plugin enabling voxel workflow with Blender for games.
+    
+    Augments a voxel workflow that look like this:
+    
+        `Voxel Editor ---(export)---> Blender ---(export)---> Game Engine`
 
     Authored By Ryan Maugin (@ryanmaugv1)
 
@@ -131,12 +134,12 @@ class FaceScalingOperator(bpy.types.Operator):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-class FacePurgerPanel:
-    """Define root panel configuration for plugin."""
+class VoxilatorPanel:
+    """Define root panel configuration for addon."""
 
     bl_space_type  = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category    = 'FPurger'
+    bl_category    = 'Voxilator'
 
     @classmethod
     def poll(cls, context):
@@ -144,11 +147,11 @@ class FacePurgerPanel:
         return context.scene is not None
 
 
-class FaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
-    """Panel for face filter related UI."""
+class MeshOptimisationPanel(VoxilatorPanel, bpy.types.Panel):
+    """Panel for mesh optimisation related UI and operators."""
 
-    bl_idname = 'VIEW3D_PT_FACEFILTER'
-    bl_label  = 'Face Filter'
+    bl_idname = 'VIEW3D_PT_MESHOPTIMISATION'
+    bl_label  = 'Mesh Optimisation'
 
     def draw(self, context):
         layout, scene = self.layout, context.scene
@@ -176,7 +179,7 @@ CLASSES = [
     FaceFilterOperator,
     FaceScalingOperator,
     AddonProperties,
-    FaceFilterPanel
+    MeshOptimisationPanel
 ]
 
 
