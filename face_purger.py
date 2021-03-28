@@ -98,6 +98,11 @@ class FaceFilterOperator(bpy.types.Operator):
         # Recalculate and set origin to center of mass for joined object.
         bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
 
+        # Merge vertex by distance of 0.0001m to get rid of duped verts and geom artefacts.
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.remove_doubles(threshold=0.0001)
+        bpy.ops.object.mode_set(mode='OBJECT')
+
         print('Completed Face Filter Operation.')
         return {'FINISHED'}
 
