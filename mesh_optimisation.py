@@ -1,12 +1,10 @@
 """
 
-    Voxilator
+    Mesh Optimisation Module
 
-    Blender plugin enabling voxel workflow with Blender for games.
-    
-    Augments a voxel workflow that look like this:
-    
-        `Voxel Editor ---(export)---> Blender ---(export)---> Game Engine`
+    This module implements the mesh optimisation operators that can help
+    reduce mesh complexity of imported voxel models for easier weight
+    painting and better game performance.
 
     Authored By Ryan Maugin (@ryanmaugv1)
 
@@ -61,7 +59,7 @@ class AddonProperties(bpy.types.PropertyGroup):
 
 
 class FaceFilterOperator(bpy.types.Operator):
-    """Operator for filtering/removing faces from mesh using a specific startegy"""
+    """Operator for filtering/removing faces from mesh using a specific strategy"""
 
     bl_idname = 'fpurger.face_filter'
     bl_label  = 'Filters/Removes Mesh Faces'
