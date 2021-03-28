@@ -15,6 +15,37 @@ import bmesh
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
+#   Property Groups
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+class AddonProperties(bpy.types.PropertyGroup):
+    """Defines all custom addon property groups."""
+    
+    filter_strategy_options = [
+        # ID, TEXT, DESCRIPTION, ICON
+        ('filter_strategy.selected_faces', 'Selected', 'Filter/remove all selected faces'),
+        ('filter_strategy.unselected_faces', 'Unselected', 'Filter/remove all unselected faces')
+    ]
+    
+    filter_strats = bpy.props.EnumProperty(
+        items = filter_strategy_options,
+        description = 'Face filtering strategy to use when executing filter operator',
+        default = 'filter_strategy.unselected_faces'
+    )
+    
+    @classmethod
+    def register_addon_props(cls):
+        bpy.types.Scene.addon_props = bpy.props.PointerProperty(type=cls)
+        
+    @staticmethod
+    def unregister_addon_props():
+        del bpy.types.Scene.addon_props
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
 #   Operators
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -91,6 +122,8 @@ class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
         layout, scene = self.layout, context.scene
 
         col = layout.column()
+        col.label(text='Filter Strategy')
+        col.prop(context.scene.addon_props, 'filter_strats', text='')
         col.operator(UnselectedFaceFilterOperator.bl_idname, 
                      text='Delete Unselected Faces', icon='FILTER')
 
@@ -105,6 +138,7 @@ class UnselectedFaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
 # List of classes to register (order matters)
 CLASSES = [
     UnselectedFaceFilterOperator,
+    AddonProperties,
     UnselectedFaceFilterPanel
 ]
 
@@ -113,6 +147,7 @@ def register():
     from bpy.utils import register_class
     for cls in CLASSES:
         register_class(cls)
+    AddonProperties.register_addon_props()
     print('Class Register Procedure Completed.')
 
 
@@ -120,6 +155,7 @@ def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(CLASSES):
         unregister_class(cls)
+    AddonProperties.unregister_addon_props()
     print('Class Unregisteration Procedure Completed,')
 
 
