@@ -29,10 +29,16 @@ class AddonProperties(bpy.types.PropertyGroup):
         ('filter_strategy.unselected_faces', 'Unselected', 'Filter/remove all unselected faces')
     ]
     
-    filter_strats = bpy.props.EnumProperty(
+    filter_strats: bpy.props.EnumProperty(
         items = filter_strategy_options,
         description = 'Face filtering strategy to use when executing filter operator',
         default = 'filter_strategy.unselected_faces'
+    )
+    
+    face_scale_factor: bpy.props.IntProperty(
+        description = 'Merge/scale all faces that form `SCALE x SCALE` planes into one mesh',
+        default = 2,
+        min = 2
     )
     
     @classmethod
@@ -52,7 +58,7 @@ class AddonProperties(bpy.types.PropertyGroup):
 
 
 class FaceFilterOperator(bpy.types.Operator):
-    """Operator for filtering/removing faces from mesh using a specific startegy."""
+    """Operator for filtering/removing faces from mesh using a specific startegy"""
 
     bl_idname = 'fpurger.face_filter'
     bl_label  = 'Filters/Removes Mesh Faces'
@@ -105,6 +111,17 @@ class FaceFilterOperator(bpy.types.Operator):
 
         print('Completed Face Filter Operation.')
         return {'FINISHED'}
+    
+    
+class FaceScalingOperator(bpy.types.Operator):
+    """Operator for scaling/merging mutiple faces from mesh into one to reduce geometry complexity"""
+
+    bl_idname = 'fpurger.face_scaling'
+    bl_label  = 'Scale/Merge Mesh Faces'
+
+    def execute(self, context):
+        print('Executing Face Scaling Operation.')
+        return {'FINISHED'}
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -135,11 +152,16 @@ class FaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout, scene = self.layout, context.scene
+        
+        box = layout.box()
+        box.label(text='Filter Strategy')
+        box.prop(context.scene.addon_props, 'filter_strats', text='')
+        box.operator(FaceFilterOperator.bl_idname, text='Filter')
 
-        col = layout.column()
-        col.label(text='Filter Strategy')
-        col.prop(context.scene.addon_props, 'filter_strats', text='')
-        col.operator(FaceFilterOperator.bl_idname, text='Filter', icon='FILTER')
+        box = layout.box()        
+        box.label(text='Face Scaling')
+        box.prop(context.scene.addon_props, 'face_scale_factor', text='')
+        box.operator(FaceScalingOperator.bl_idname, text='Scale')
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -152,6 +174,7 @@ class FaceFilterPanel(FacePurgerPanel, bpy.types.Panel):
 # List of classes to register (order matters)
 CLASSES = [
     FaceFilterOperator,
+    FaceScalingOperator,
     AddonProperties,
     FaceFilterPanel
 ]
