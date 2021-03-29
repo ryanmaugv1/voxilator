@@ -39,18 +39,27 @@ bl_info = {
 
 # Reloads modules if they exist in local symbols table.
 if "bpy" in locals():
+
     import importlib
-    if "mesh_optimisation" in locals():
+
+    if "MeshOptimisationModule" in locals():
+        from .source import mesh_optimisation
         importlib.reload(mesh_optimisation)
-# Imports module classes if module exists in local symbols table
+
+# Imports module classes if "bpy" module does not exist (infers first run).
 else:
-    from .mesh_optimisation import MeshOptimisationModule
-
-import bpy
+    from .source.mesh_optimisation import MeshOptimisationModule
 
 
-# Call all module register methods to register entire addon.
+# List of all addon modules.
+modules = [MeshOptimisationModule]
+
+# Called by Blender and triggers addon's module registerations.
 def register():
-    modules = [MeshOptimisationModule]
     for mod in modules:
         mod.register()
+
+# Called by Blender and triggers addon's module unregisterations.
+def unregister():
+    for mod in reversed(modules):
+        mod.unregister()

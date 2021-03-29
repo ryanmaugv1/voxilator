@@ -189,7 +189,7 @@ class MeshOptimisationModule:
         for cls in MeshOptimisationModule.CLASSES:
             register_class(cls)
         AddonProperties.register_addon_props()
-        print('Class Register Procedure Completed.')
+        print('Mesh Optimisation Module Class Register Procedure Completed.')
 
     @staticmethod
     def unregister():
@@ -197,4 +197,4 @@ class MeshOptimisationModule:
         for cls in reversed(MeshOptimisationModule.CLASSES):
             unregister_class(cls)
         AddonProperties.unregister_addon_props()
-        print('Class Unregisteration Procedure Completed,')
+        print('Mesh Optimisation Module Class Unregisteration Procedure Completed,')
