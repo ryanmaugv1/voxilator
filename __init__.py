@@ -3,9 +3,14 @@
     Voxilator Root Module
 
     Imports all voxilator sub-modules and also handles import reloads 
-    if module source changes.
+    if module source changes. This module enables this addon to be
+    installed within Blender and improves development workflow by allowing
+    script reloading in Blender (Blender Icon -> System -> Reload Scripts). 
 
-    Authored By Ryan Maugin
+    This file must remain at root of project to allow for addon
+    installation as zip.
+
+    Authored By Ryan Maugin (@ryanmaugv1)
 
 """
 
