@@ -24,7 +24,7 @@ bl_info = {
     "version": (0, 1),
     "blender": (2, 91, 2),
     "location": "Mesh",
-    "wiki_url": "https://github.com/ryanmaugv1/blender_voxilator",
+    "wiki_url": "https://github.com/ryanmaugv1/voxilator",
     "support": "COMMUNITY",
     "category": "Mesh",
 }
