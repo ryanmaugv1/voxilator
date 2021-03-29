@@ -167,35 +167,34 @@ class MeshOptimisationPanel(VoxilatorPanel, bpy.types.Panel):
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
-#   Class Management
+#   Module Management
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-# List of classes to register (order matters)
-CLASSES = [
-    FaceFilterOperator,
-    FaceScalingOperator,
-    AddonProperties,
-    MeshOptimisationPanel
-]
+class MeshOptimisationModule:
+    """Mesh optimisation module wrapper."""
 
+    # List of classes to register (order matters)
+    CLASSES = [
+        FaceFilterOperator,
+        FaceScalingOperator,
+        AddonProperties,
+        MeshOptimisationPanel
+    ]
 
-def register():
-    from bpy.utils import register_class
-    for cls in CLASSES:
-        register_class(cls)
-    AddonProperties.register_addon_props()
-    print('Class Register Procedure Completed.')
+    @staticmethod
+    def register():
+        from bpy.utils import register_class
+        for cls in MeshOptimisationModule.CLASSES:
+            register_class(cls)
+        AddonProperties.register_addon_props()
+        print('Class Register Procedure Completed.')
 
-
-def unregister():
-    from bpy.utils import unregister_class
-    for cls in reversed(CLASSES):
-        unregister_class(cls)
-    AddonProperties.unregister_addon_props()
-    print('Class Unregisteration Procedure Completed,')
-
-
-if __name__ == '__main__':
-    register()
+    @staticmethod
+    def unregister():
+        from bpy.utils import unregister_class
+        for cls in reversed(MeshOptimisationModule.CLASSES):
+            unregister_class(cls)
+        AddonProperties.unregister_addon_props()
+        print('Class Unregisteration Procedure Completed,')
