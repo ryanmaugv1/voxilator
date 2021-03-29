@@ -61,7 +61,7 @@ class AddonProperties(bpy.types.PropertyGroup):
 class FaceFilterOperator(bpy.types.Operator):
     """Operator for filtering/removing faces from mesh using a specific strategy"""
 
-    bl_idname = 'fpurger.face_filter'
+    bl_idname = 'voxilator.face_filter'
     bl_label  = 'Filters/Removes Mesh Faces'
 
     def execute(self, context):
@@ -117,7 +117,7 @@ class FaceFilterOperator(bpy.types.Operator):
 class FaceScalingOperator(bpy.types.Operator):
     """Operator for scaling/merging mutiple faces from mesh into one to reduce geometry complexity"""
 
-    bl_idname = 'fpurger.face_scaling'
+    bl_idname = 'voxilator.face_scaling'
     bl_label  = 'Scale/Merge Mesh Faces'
 
     def execute(self, context):
