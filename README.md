@@ -1,6 +1,6 @@
 # Voxilator
 
-Blender Plugin enabling hassle-less voxel development workflow for game development using Blender.
+Addon which enables hassle-free voxel art workflow for game development using Blender.
 
 The workflow we plan to augment would look something like this:
 
