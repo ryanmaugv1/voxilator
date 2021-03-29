@@ -91,6 +91,10 @@ class FaceFilterOperator(bpy.types.Operator):
             removed_face_cnt += len(faces_to_filter)
             bmesh.update_edit_mesh(obj_data)
 
+            # Do some cleanup of the bmesh manually.
+            obj_bmesh.select_flush_mode()
+            obj_bmesh.free()
+
         print('Removed a total of %s faces from a collection of %s objects.'
               % (removed_face_cnt, len(selected_objs)))
 
