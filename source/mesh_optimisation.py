@@ -64,6 +64,7 @@ class FaceFilterOperator(bpy.types.Operator):
     bl_idname = 'voxilator.face_filter'
     bl_label  = 'Filters/Removes Mesh Faces'
 
+
     def execute(self, context):
         print('Executing Face Filter Operation.')
         scene = context.scene
@@ -72,10 +73,13 @@ class FaceFilterOperator(bpy.types.Operator):
         
         print('Selected Filter Strategy: %s' % filter_strategy)
 
+        # Set mode to edit or else bmesh.from_edit_mesh() will fail.
+        bpy.ops.object.mode_set(mode='EDIT')
+
         # Loop through all selected active objects in edit mode.
         selected_objs = context.selected_objects
         for obj in selected_objs:
-            # Get mesh as bmesh.
+            # Convert mesh to bmesh object.
             obj_data = obj.data
             obj_bmesh = bmesh.from_edit_mesh(obj_data)
 
@@ -112,7 +116,6 @@ class FaceFilterOperator(bpy.types.Operator):
         # Merge vertex by distance of 0.0001m to get rid of duped verts and geom artefacts.
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.remove_doubles(threshold=0.0001)
-        bpy.ops.object.mode_set(mode='OBJECT')
 
         print('Completed Face Filter Operation.')
         return {'FINISHED'}
