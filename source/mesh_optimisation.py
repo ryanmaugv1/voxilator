@@ -41,6 +41,12 @@ class AddonProperties(bpy.types.PropertyGroup):
         default = 2,
         min = 2
     )
+
+    scale_selected_faces: bpy.props.BoolProperty(
+        name = 'Selected Faces Only',
+        description = 'Scale/merge selected mesh faces rather than entire mesh faces',
+        default = False
+    )
     
     @classmethod
     def register_addon_props(cls):
@@ -169,6 +175,7 @@ class MeshOptimisationPanel(VoxilatorPanel, bpy.types.Panel):
         box = layout.box()        
         box.label(text='Face Scaling')
         box.prop(context.scene.addon_props, 'face_scale_factor', text='')
+        box.prop(context.scene.addon_props, 'scale_selected_faces')
         box.operator(FaceScalingOperator.bl_idname, text='Scale')
 
 
