@@ -133,9 +133,63 @@ class FaceScalingOperator(bpy.types.Operator):
     bl_idname = 'voxilator.face_scaling'
     bl_label  = 'Scale/Merge Mesh Faces'
 
+
     def execute(self, context):
         print('Executing Face Scaling Operation.')
+        scene = context.scene
+        scale_factor = context.scene.addon_props.face_scale_factor
+        scale_selected_faces_only = context.scene.addon_props.scale_selected_faces
+
+        # Set mode to edit or else bmesh.from_edit_mesh() will fail.
+        bpy.ops.object.mode_set(mode='EDIT')
+
+        # Loop through each selected object and apply optimisation.
+        selected_objs = context.selected_objects
+        for obj in selected_objs:
+            obj_data = obj.data
+            obj_bmesh = bmesh.from_edit_mesh(obj_data)
+
+            # Selected subset of faces if we only want to scale selected mesh faces.
+            bmesh_faces = []
+            if scale_selected_faces_only:
+                bmesh_faces = [face for face in obj_bmesh.faces if face.select]
+            else:
+                bmesh_faces = obj_bmesh.faces
+
+            # Ensure mesh has full-quad topology (no traingles).
+            if not self._has_full_quad_topology(bmesh_faces):
+                self.report(
+                    {'ERROR'}, 'Optimisation can only be applied to mesh with full-quad topology.')
+                return {'FINISHED'}
+        
+            # Applies optimisation and handles error/failure reporting back to user.
+            if not self._apply_face_scaling(bmesh_faces, scale_factor):
+                self.report({'ERROR'}, 'Failed to perform face scaling optimisation on mesh.')
+
+        print('Completed Face Scaling Operation.')
         return {'FINISHED'}
+
+
+    def _apply_face_scaling(self, faces: [bmesh.types.BMFace], scale_factor: int) -> bool:
+        """Applies face scaling optimisation on quad topology bmesh face sequence.
+
+        Arguments:
+            faces: List of bmesh faces we want to apply scale optimisation to.
+            scale_factor: Defines `SCALExSCALE` face pattern we will be optimising.
+        
+        Returns:
+            `True` if applying face scaling succeeded, else `False`.
+        """
+         # TODO(ryanmaugv1): Implement face scaling algorithm and test on voxel mesh.
+        return True
+
+
+    def _has_full_quad_topology(self, faces: [bmesh.types.BMFace]) -> bool:
+        """Check that all mesh faces have 4 vertices, ensuring full-quad topology."""
+        for face in faces:
+            if len(face.verts) != 4:
+                return False
+        return True
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
