@@ -55,6 +55,7 @@ if "bpy" in locals():
 else:
     from .source.mesh_optimisation import MeshOptimisationModule
 
+import bpy
 
 # List of all addon modules.
 modules = [MeshOptimisationModule]
