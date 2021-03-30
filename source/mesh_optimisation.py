@@ -180,7 +180,33 @@ class FaceScalingOperator(bpy.types.Operator):
         Returns:
             `True` if applying face scaling succeeded, else `False`.
         """
-         # TODO(ryanmaugv1): Implement face scaling algorithm and test on voxel mesh.
+        # TODO(ryanmaugv1): Implement face scaling algorithm and test on voxel mesh.
+        # Grouping:
+        # 1) Create dict key first partition : {face.normal.x}{face.normal.y}
+        #      a) Derived from "face.normal".
+        #           - Might have to normalise normal vector if not done so already.
+        # 2) Create dict key second partition: _{normalDirectionAxis}{PlaneConstForNormalDirAxis}
+        #      a) Derived from "face.calc_center_bounds()" 
+        #           - Check if returned vector is relative to local or global space.
+        #           - If we need to do space transformation on vector we need to embed it in face obj.
+        # 3) Check if key exists in "plane_groups" dictionary, else create a new entry with key. 
+        # 4) Add face into correct position within correct plane_group matrix.
+        #      a) If plane_group contain empty np.array simply just add it as only element.
+        #      b) If plane_group is not empty.
+        #           I) Get an available corner element.
+        #           II) Calculate relative position for new face:
+        #               Formula: CORNER_FACE_CENTER_VEC - NEW_FACE_CENTER_VEC
+        #           III) Scale result vector by -1 if face.normal point BACK or DOWN relative to WORLD orientation.
+        #           IV) Add extra dimensions if neeeded and/or place face obj in position.
+        #               - Should be in corner if dimensions were expanded.
+        #               - Should not be in corner if dimensions were not expanded.
+        # 5) Create a stride filter matrix, derived from scale factor.
+        # 6) Aopply stride filter to plane_groups.
+        #       a) For each match merge faces into one.
+        #           - Ensure UV's are kept intact (research more on how to do this).
+        #               - Could be done by not remove edges between diff coloured quads.
+        #               - Look into Cycles "Bake" texture on new optimised mesh.
+        # 7) Finalise mesh, cleanup and done.
         return True
 
 
