@@ -66,14 +66,14 @@ class AddonProperties(bpy.types.PropertyGroup):
         # ID, TEXT, DESCRIPTION, ICON
         ('scale_filter_shapes.square', 'Square', 'Creates square shaped filter: [+]'),
         ('scale_filter_shapes.h_rect', 'Horizontal Rectangle', 
-            'Creates horizontal rectangle shaped filter: [ | ]'),
+            'Creates horizontal rectangle shaped filter: [|]'),
         ('scale_filter_shapes.v_rect', 'Vertical Rectangle', 
             'Creates vertical rectangle shaped filter: [-]'),
     ]
 
     scale_filter_shape: bpy.props.EnumProperty(
         items = scale_filter_shapes,
-        description = 'Determines the shape of the filter scaled by factor (hover over options for more)',
+        description = 'Determines the shape of the filter scaled by scale factor',
         default = 'scale_filter_shapes.square'
     )
 
@@ -85,7 +85,7 @@ class AddonProperties(bpy.types.PropertyGroup):
 
     preserve_uv: bpy.props.BoolProperty(
         name = 'Preserve UV',
-        description = 'Preserve mesh UV when performing face scale (makes optimisation less effective).',
+        description = 'Preserve mesh UV when performing face scale (makes optimisation less effective)',
         default = False
     )
 
