@@ -62,19 +62,19 @@ class AddonProperties(bpy.types.PropertyGroup):
         min = 2
     )
 
-    scale_filter_shapes = [
+    scale_window_shapes = [
         # ID, TEXT, DESCRIPTION, ICON
-        ('scale_filter_shapes.square', 'Square', 'Creates square shaped filter: [+]'),
-        ('scale_filter_shapes.h_rect', 'Horizontal Rectangle', 
+        ('scale_window_shapes.square', 'Square', 'Creates square shaped filter: [+]'),
+        ('scale_window_shapes.h_rect', 'Horizontal Rectangle', 
             'Creates horizontal rectangle shaped filter: [|]'),
-        ('scale_filter_shapes.v_rect', 'Vertical Rectangle', 
+        ('scale_window_shapes.v_rect', 'Vertical Rectangle', 
             'Creates vertical rectangle shaped filter: [-]'),
     ]
 
-    scale_filter_shape: bpy.props.EnumProperty(
-        items = scale_filter_shapes,
-        description = 'Determines the shape of the filter scaled by scale factor',
-        default = 'scale_filter_shapes.square'
+    scale_window_shape: bpy.props.EnumProperty(
+        items = scale_window_shapes,
+        description = 'Determines the shape of the sliding window (also scaled by scale factor)',
+        default = 'scale_window_shapes.square'
     )
 
     scale_selected_faces: bpy.props.BoolProperty(
@@ -426,7 +426,7 @@ class MeshOptimisationPanel(VoxilatorPanel, bpy.types.Panel):
         box = layout.box()
         box.label(text='Face Scaling')
         box.prop(context.scene.addon_props, 'face_scale_factor', text='Scale Factor')
-        box.prop(context.scene.addon_props, 'scale_filter_shape', text='Filter Shape')
+        box.prop(context.scene.addon_props, 'scale_window_shape', text='Window Shape')
         box.prop(context.scene.addon_props, 'scale_selected_faces')
         box.prop(context.scene.addon_props, 'preserve_uv')
         box.operator(FaceScalingOperator.bl_idname, text='Scale')
