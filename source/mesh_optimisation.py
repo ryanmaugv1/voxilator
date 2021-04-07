@@ -423,10 +423,12 @@ class MeshOptimisationPanel(VoxilatorPanel, bpy.types.Panel):
         box.prop(context.scene.addon_props, 'filter_strats', text='')
         box.operator(FaceFilterOperator.bl_idname, text='Filter')
 
-        box = layout.box()        
+        box = layout.box()
         box.label(text='Face Scaling')
-        box.prop(context.scene.addon_props, 'face_scale_factor', text='')
+        box.prop(context.scene.addon_props, 'face_scale_factor', text='Scale Factor')
+        box.prop(context.scene.addon_props, 'scale_filter_shape', text='Filter Shape')
         box.prop(context.scene.addon_props, 'scale_selected_faces')
+        box.prop(context.scene.addon_props, 'preserve_uv')
         box.operator(FaceScalingOperator.bl_idname, text='Scale')
 
 
