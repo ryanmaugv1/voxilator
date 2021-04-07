@@ -13,6 +13,19 @@
 import bpy
 import bmesh
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+#   Utility Classes
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+@dataclass
+class Tuple2DCoord:
+    def __init__(self, x, y=None):
+        self.x = x
+        self.y = y
+
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
