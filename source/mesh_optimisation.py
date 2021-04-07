@@ -82,6 +82,13 @@ class AddonProperties(bpy.types.PropertyGroup):
         description = 'Scale/merge selected mesh faces rather than entire mesh faces',
         default = False
     )
+
+    preserve_uv: bpy.props.BoolProperty(
+        name = 'Preserve UV',
+        description = 'Preserve mesh UV when performing face scale (makes optimisation less effective).',
+        default = False
+    )
+
     
     @classmethod
     def register_addon_props(cls):
