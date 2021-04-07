@@ -12,6 +12,13 @@
 
 import bpy
 import bmesh
+import mathutils
+import numpy as np
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import Dict
+
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
