@@ -185,6 +185,7 @@ class FaceScalingOperator(bpy.types.Operator):
         scene = context.scene
         scale_factor = context.scene.addon_props.face_scale_factor
         scale_selected_faces_only = context.scene.addon_props.scale_selected_faces
+        scale_window_shape = context.scene.addon_props.scale_window_shape
 
         # Set mode to edit or else bmesh.from_edit_mesh() will fail.
         bpy.ops.object.mode_set(mode='EDIT')
@@ -209,14 +210,14 @@ class FaceScalingOperator(bpy.types.Operator):
                 return {'FINISHED'}
         
             # Applies optimisation and handles error/failure reporting back to user.
-            if not self._apply_face_scaling(bmesh_faces, scale_factor):
-                self.report({'ERROR'}, 'Failed to perform face scaling optimisation on mesh.')
+            self._apply_face_scaling(bmesh_faces, scale_factor, scale_window_shape)
 
         print('Completed Face Scaling Operation.')
         return {'FINISHED'}
 
 
-    def _apply_face_scaling(self, faces: [bmesh.types.BMFace], scale_factor: int) -> bool:
+    def _apply_face_scaling(
+        self, faces: [bmesh.types.BMFace], scale_factor: int, scale_window_shape: str) -> bool:
         """Applies face scaling optimisation on quad topology bmesh face sequence.
 
         Arguments:
@@ -230,9 +231,12 @@ class FaceScalingOperator(bpy.types.Operator):
         print('Number of Planar Groups: %s' % len(planar_groups))
         print('PLANAR GROUP: \n%s' % planar_groups)
         
-        # 5) Create a stride filter matrix, derived from scale factor.
-        
-        # 6) Apply stride filter to planar_groups.
+        # Derive sliding window shape.
+        window_shape = self._derive_window_shape(scale_factor, scale_window_shape)
+        if window_shape is None:
+            return False
+        print('WINDOW SHAPE: (x:%s, y:%s)' %(window_shape.x, window_shape.y))
+
         #       - First make sure planar group shape is greater than or equal to 2x2.
         #       a) For each match merge faces into one.
         #           - Ensure UV's are kept intact (research more on how to do this).
@@ -379,6 +383,28 @@ class FaceScalingOperator(bpy.types.Operator):
         if fn.y in [-1, 1]: key += 'Y%s' % round(fc.y, 1)
         if fn.z in [-1, 1]: key += 'Z%s' % round(fc.z, 1)
         return key
+
+
+    def _derive_window_shape(self, scale_factor: int, scale_window_shape: str) -> Tuple2DCoord:
+        """Derive sliding window shape based on given scale factor and desired shape.
+        
+        Arguments:
+            scale_factor: Integer used to scale window shape by.
+            scale_window_shape: Shape of the window e..g square, vertical rectangle etc.
+
+        Returns:
+            Tuple2DCoord containing window shape, else `None` if derivation fails.
+        """
+        if scale_window_shape == 'scale_window_shapes.square':
+            return Tuple2DCoord(scale_factor, scale_factor)
+        if scale_window_shape == 'scale_window_shapes.h_rect':
+            return Tuple2DCoord(0, scale_factor)
+        if scale_window_shape == 'scale_window_shapes.v_rect':
+            return Tuple2DCoord(scale_factor, 0)
+        self.report(
+            {'ERROR'}, 
+            'Unsupported window shape %s cannot be used (report this to dev).' % scale_window_shape)
+        return None
 
 
     def _has_full_quad_topology(self, faces: [bmesh.types.BMFace]) -> bool:
