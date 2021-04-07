@@ -223,6 +223,27 @@ class FaceScalingOperator(bpy.types.Operator):
         return True
 
 
+    def _convert_face_pos_vec_to_2d(self, face: bmesh.types.BMFace) -> Tuple2DCoord:
+        """Convert 3D blender vector into a 2D tuple vector excluding the normal axis for given face.
+
+        We flatten the 3D Blender vector into a 2D tuple vector as planar groups are not 3D tensors.
+        This is done by excluding the normal axis of the face (axis which pokes through plane) and 
+        keep the two axis's which go vertically and horizontally along the plane.
+        
+        Arguments:
+            face: BMesh face to get normal axis and center position vector that is to be converted.
+
+        Returns:
+            Tuple2DCoord, with x and y axis of face on plane.
+        """
+        face_center_vec = face.calc_center_bounds()
+        if face.normal.x in [-1, 1]:
+            return Tuple2DCoord(round(face_center_vec.y, 1), round(face_center_vec.z, 1))
+        if face.normal.y in [-1, 1]:
+            return Tuple2DCoord(round(face_center_vec.x, 1), round(face_center_vec.z, 1))
+        return Tuple2DCoord(round(face_center_vec.x, 1), round(face_center_vec.y, 1))
+
+    
     def _form_planar_group_key(self, face: bmesh.types.BMFace) -> str:
         """Creates a dict key for planar group the given face belongs to.
         
