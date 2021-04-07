@@ -62,6 +62,21 @@ class AddonProperties(bpy.types.PropertyGroup):
         min = 2
     )
 
+    scale_filter_shapes = [
+        # ID, TEXT, DESCRIPTION, ICON
+        ('scale_filter_shapes.square', 'Square', 'Creates square shaped filter: [+]'),
+        ('scale_filter_shapes.h_rect', 'Horizontal Rectangle', 
+            'Creates horizontal rectangle shaped filter: [ | ]'),
+        ('scale_filter_shapes.v_rect', 'Vertical Rectangle', 
+            'Creates vertical rectangle shaped filter: [-]'),
+    ]
+
+    scale_filter_shape: bpy.props.EnumProperty(
+        items = scale_filter_shapes,
+        description = 'Determines the shape of the filter scaled by factor (hover over options for more)',
+        default = 'scale_filter_shapes.square'
+    )
+
     scale_selected_faces: bpy.props.BoolProperty(
         name = 'Selected Faces Only',
         description = 'Scale/merge selected mesh faces rather than entire mesh faces',
