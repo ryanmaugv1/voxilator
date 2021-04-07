@@ -223,6 +223,82 @@ class FaceScalingOperator(bpy.types.Operator):
         return True
 
 
+    def _group_faces_by_plane(self, faces: [bmesh.types.BMFace]) -> Dict[str, np.ndarray]:
+        """Segments faces from mesh into 2-dimension planar groups.
+
+        This method will take in a list of faces making up a mesh and segment
+        the faces into planar groups. This means that faces with common normal
+        direction and common position on normal axis will be grouped together
+        in a numpy array forming a planar group.
+
+        These generated planar groups map the position of each face relative to
+        eachother.
+        
+        For example imagine a table-like mesh made up of the following faces:
+
+        __________________
+        [ ][ ]      [ ][ ]
+        [ ][ ]      [ ][ ]
+
+        The upward facing faces (denotes as "__") are on the same plane and will
+        be placed within the same planar group. This planar group will 
+        look something like this:
+
+        [F, F, F, F, F, F, F]
+        WHERE F = Face
+
+        The forward facing faces (denoted as "[ ]") are on the same plane and will
+        therefore be placed within the same planar group. This planar group will 
+        look something like this:
+
+        [F, F, 0, 0, 0, F, F]
+        [F, F, 0, 0, 0, F, F]
+        WHERE F = Face AND 0 = Padding Value (represent empty space).
+
+        The above example illustrates what is meant by faces are positioned
+        relative to eachother in planar groups.
+
+        Arguments:
+            faces: List of faces to group by plane.
+
+        Returns:
+            Dictionary, containing all mesh planar groups.
+        """
+        planar_groups = {}
+
+        for face in faces:
+            group_key = self._form_planar_group_key(face)
+
+            # If planar group for face doesn't exists then init one with face.
+            if not group_key in planar_groups:
+                planar_groups[group_key] = [face]
+                continue
+
+            # Add all faces to respective plane group.
+            planar_groups[group_key].append(face)
+
+        for key, faces in planar_groups.items():
+            # Get min and max x-axis and y-axis value to use for deriving shape of planar group.
+            min_x_axis = min([self._convert_face_pos_vec_to_2d(face).x for face in faces])
+            min_y_axis = min([self._convert_face_pos_vec_to_2d(face).y for face in faces])
+            max_x_axis = max([self._convert_face_pos_vec_to_2d(face).x for face in faces])
+            max_y_axis = max([self._convert_face_pos_vec_to_2d(face).y for face in faces])
+
+            # Define new planar group matrix with shape that enncompasses entire plane area.
+            planar_group_shape = (int((max_x_axis - min_x_axis) + 1), int((max_y_axis - min_y_axis) + 1))
+            planar_group_ndarray = np.zeros((planar_group_shape[1], planar_group_shape[0]), dtype='object')
+           
+            # Add faces into new planar group matrix in a way which encodes they're world position.
+            for face in faces:
+                face_center_vec = self._convert_face_pos_vec_to_2d(face)
+                col_index = int(face_center_vec.x - min_x_axis)
+                row_index = int(face_center_vec.y - min_y_axis)
+                planar_group_ndarray[row_index][col_index] = face
+            planar_groups[key] = planar_group_ndarray
+
+        return planar_groups
+
+
     def _convert_face_pos_vec_to_2d(self, face: bmesh.types.BMFace) -> Tuple2DCoord:
         """Convert 3D blender vector into a 2D tuple vector excluding the normal axis for given face.
 
