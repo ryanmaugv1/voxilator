@@ -92,7 +92,9 @@ class FaceFilterOperator(bpy.types.Operator):
 
 
     def execute(self, context):
+        print('=========================================================')
         print('Executing Face Filter Operation.')
+        print('=========================================================')
         scene = context.scene
         filter_strategy = context.scene.addon_props.filter_strats
         removed_face_cnt = 0
@@ -155,7 +157,9 @@ class FaceScalingOperator(bpy.types.Operator):
 
 
     def execute(self, context):
-        print('Executing Face Scaling Operation.')
+        print('=========================================================')
+        print('     Executing Face Scaling Operation.')
+        print('=========================================================')
         scene = context.scene
         scale_factor = context.scene.addon_props.face_scale_factor
         scale_selected_faces_only = context.scene.addon_props.scale_selected_faces
