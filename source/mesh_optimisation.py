@@ -223,6 +223,46 @@ class FaceScalingOperator(bpy.types.Operator):
         return True
 
 
+    def _form_planar_group_key(self, face: bmesh.types.BMFace) -> str:
+        """Creates a dict key for planar group the given face belongs to.
+        
+        This method creates a key for the planar group dictionary, this key
+        is derived from the given mesh center and normal vector.
+
+        Keys are derived like so:
+
+        FN = Face Normal
+        FC = Face Center
+        KEY = '{FN.x}.{FN.y}.{FN.z}_'
+        if FN.x != 0: KEY += 'X{FC.x}'
+        if FN.y != 0: KEY += 'Y{FC.y}'
+        if FN.z != 0: KEY += 'Z{FC.z}'
+
+        Note: For the sake of readability I have not included decimal obj
+        conversion for floating-point precision correction.
+
+        Which should look something like this:
+
+        WHEN: 
+            FN = [0, -1, 0], FC = [8.5, 12, 3]
+        THEN:
+            KEY = "0.-1.0_Y12"
+
+        Arguments:
+            face: Face to derive planar group dict key from.
+
+        Returns:
+            String, planar group dictionary key derived from face.
+        """
+        fn = face.normal
+        fc = face.calc_center_bounds()
+        key = '%s.%s.%s_' % (int(fn.x), int(fn.y), int(fn.z))
+        if fn.x in [-1, 1]: key += 'X%s' % round(fc.x, 1)
+        if fn.y in [-1, 1]: key += 'Y%s' % round(fc.y, 1)
+        if fn.z in [-1, 1]: key += 'Z%s' % round(fc.z, 1)
+        return key
+
+
     def _has_full_quad_topology(self, faces: [bmesh.types.BMFace]) -> bool:
         """Check that all mesh faces have 4 vertices, ensuring full-quad topology."""
         for face in faces:
