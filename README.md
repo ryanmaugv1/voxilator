@@ -10,7 +10,7 @@ The workflow we plan to augment would look something like this:
 - **Blender**, used to rig, skin and animate your voxel modelsn and more.
 - **Game Engine**, used to bring your Blender augmented voxel models to life (with no hassle).
 
-# Installation
+## Installation
 
 1. Download this repository as a zip.
 2. Open Blender.
@@ -22,9 +22,13 @@ The workflow we plan to augment would look something like this:
 
 ## Features
 
+- **TODO:** Object Manipulator
 - Mesh Optimisation
   - **Face filtering**, removes selected or unselected faces from selected meshes.
   - **Face scaling**, scales/merges faces on single mesh by scale factor to reduce mesh complexity.
+- **TODO:** Texture Manipulator
+  - **TODO:** Face Painter (similar to magica).
+- **TODO:** Custom Exporter (for game engines)
 
 ## Author
 
